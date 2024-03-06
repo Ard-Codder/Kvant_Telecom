@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming</title>
+</head>
+<body>
+<video id="video" width="640" height="480" controls></video>
+
+<script>
+    const video = document.getElementById('video');
+
+    // Замените логин и пароль ниже на ваши собственные данные для входа
+    const login = 'neuro';
+    const password = 'neuro339';
+
+    // URL-адрес API для авторизации
+    const authUrl = 'https://watcher.tv.kvant-telecom.ru/vsaas/auth/login';
+
+    // URL-адрес видеопотока камеры
+    const videoUrl = 'https://watcher.tv.kvant-telecom.ru/vsaas/v2/cameras/pyaterochka.test-132ba24f9a/view';
+
+    // Функция для получения токена доступа
+    async function getAccessToken() {
+      const response = await fetch(authUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          login,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      return data.access_token;
+    }
+
+    // Функция для получения видеопотока камеры
+    async function getVideoStream() {
+      const accessToken = await getAccessToken();
+
+      const response = await fetch(videoUrl, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const stream = await response.body;
+        video.srcObject = new MediaStream([stream]);
+      } else {
+        console.error('Error getting video stream:', response.status);
+      }
+    }
+
+    getVideoStream();
+</script>
+</body>
+</html>
