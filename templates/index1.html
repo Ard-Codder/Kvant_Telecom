@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Streaming</title>
+</head>
+<body>
+    <h1>Video Streaming</h1>
+    <select id="camera-select">
+        <option value="rtsp://camera1">Camera 1</option>
+        <option value="rtsp://camera2">Camera 2</option>
+        <option value="rtsp://camera3">Camera 3</option>
+    </select>
+    <img id="video-feed" src="" width="640" height="480">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cameraSelect = document.getElementById('camera-select');
+            var videoFeed = document.getElementById('video-feed');
+
+            // Обновление изображения при изменении выбранной камеры
+            cameraSelect.addEventListener('change', function() {
+                var cameraUrl = cameraSelect.value;
+                videoFeed.src = '/video_feed?camera=' + encodeURIComponent(cameraUrl);
+            });
+
+            // Загрузка изображения с первой камеры при загрузке страницы
+            var firstCameraUrl = cameraSelect.options[0].value;
+            videoFeed.src = '/video_feed?camera=' + encodeURIComponent(firstCameraUrl);
+        });
+    </script>
+</body>
+</html>
